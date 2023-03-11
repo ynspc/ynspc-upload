@@ -3,7 +3,7 @@ import path from "path"
 
 interface CONFIG {
     extensions: string[]
-    errorMessage: string
+    message: string
 }
 
 export const manageConfiguration = (config?: CONFIG): { allowedExtension: CONFIG } => {
@@ -15,7 +15,7 @@ export const manageConfiguration = (config?: CONFIG): { allowedExtension: CONFIG
     return {
         allowedExtension: {
             extensions: ['jpg'],
-            errorMessage: "Your selection of file is not supported"
+            message: "Your selection of file is not supported"
         }
     }
 }
