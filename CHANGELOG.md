@@ -1,5 +1,11 @@
 # @ynspc/image-upload
 
+## 0.0.5
+
+### Patch Changes
+
+- a812e1e: readme added
+
 ## 0.0.4
 
 ### Patch Changes
