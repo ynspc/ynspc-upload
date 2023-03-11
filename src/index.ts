@@ -1,7 +1,8 @@
-export const testOne = () => {
-    console.log("Hi this is first test in the ci.")
-}
+import FileUpload from "./upload"
+import { manageConfiguration, manageFileNaming } from "./upload/config"
 
-export const getName = (name: string) => {
-    return `My name is ${name}`
+export default FileUpload
+export {
+    manageConfiguration,
+    manageFileNaming
 }
