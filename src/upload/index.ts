@@ -51,9 +51,9 @@ export default class FileUpload {
         }
         callback(null, true)
       },
-      limits: {
-        fileSize: 1024 * 1024
-      }
+      // limits: {
+      //   fileSize: 1024 * 1024
+      // }
       /*limits:{
             fileSize: 1024 * 1024
         }*/
