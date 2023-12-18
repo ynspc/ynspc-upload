@@ -1,8 +1,9 @@
-import { Request, Response } from "express"
-import multer from "multer"
-import path from "path"
 import fs from "fs"
-import { manageFileNaming } from "./config"
+import path from "path"
+import { Request, Response } from "express"
+import multer, { FileFilterCallback } from "multer"
+import { manageFileFilter, manageFileNaming } from "./config"
+import { CONFIG, UPLOAD_CONFIG } from "../types/upload"
 
 export default class FileUpload {
   private readonly destinationFolder: string
@@ -21,8 +22,27 @@ export default class FileUpload {
       
     this.destinationFolder = aggregateFolder
   }
+  
+  #uploadFile(request: Request, config: UPLOAD_CONFIG) {
+    return multer({
+      storage: this.#storage(),
+      fileFilter: (request: Request, file: Express.Multer.File, callback: FileFilterCallback) => {
+        manageFileFilter(request, file, callback, config)
+      }
+    })
+  }
 
-  singleUpload(fileName: string, request: Request, response: Response, config: any) {
+  #storage() {
+    return multer.diskStorage({
+      destination: (req: Request, file: Express.Multer.File, cb) => {
+        cb(null, `${this.destinationFolder}/`)
+      },
+
+      filename: (req, file, cb) => manageFileNaming(req, file, cb)
+    })
+  }
+
+  singleUpload(fileName: string, request: Request, response: Response, config: UPLOAD_CONFIG) {
     return new Promise((resolve, reject) => {
       this.#uploadFile(request, config).single(fileName)(
         request,
@@ -38,35 +58,35 @@ export default class FileUpload {
     })
   }
 
-  #uploadFile(request: Request, { allowedExtension }: any) {
-    return multer({
-      storage: this.#storage(),
-      fileFilter: function (request, file, callback) {
-        const extension = path.extname(file.originalname)
-        if (!allowedExtension.extensions.includes(extension)) {
-          callback(null, false)
-          let err: any = new Error(allowedExtension.message)
-          err.status = 422
-          return callback(err)
+  multipleUpload(fileName: string, request: Request, response: Response, config: any) {
+    return new Promise((resolve, reject) => {
+      this.#uploadFile(request, config).array(fileName)(
+        request,
+        response,
+        function (error) {
+          if (error) {
+            return reject(error)
+          }
+
+          return resolve(request.files)
         }
-        callback(null, true)
-      },
-      // limits: {
-      //   fileSize: 1024 * 1024
-      // }
-      /*limits:{
-            fileSize: 1024 * 1024
-        }*/
+      )
     })
   }
 
-  #storage() {
-    return multer.diskStorage({
-      destination: (req: Request, file: Express.Multer.File, cb) => {
-        cb(null, `${this.destinationFolder}/`)
-      },
+  differentFieldsUpload(structuredField: multer.Field[], request: Request, response: Response, config: any) {
+    return new Promise((resolve, reject) => {
+      this.#uploadFile(request, config).fields(structuredField)(
+        request,
+        response,
+        function (error) {
+          if (error) {
+            return reject(error)
+          }
 
-      filename: (req, file, cb) => manageFileNaming(req, file, cb)
+          return resolve(request.files)
+        }
+      )
     })
   }
 
