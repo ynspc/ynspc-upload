@@ -1,5 +1,11 @@
 # @ynspc/image-upload
 
+## 0.0.6
+
+### Patch Changes
+
+- c7b1359: added repo link
+
 ## 0.0.5
 
 ### Patch Changes
