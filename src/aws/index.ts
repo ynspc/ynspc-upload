@@ -1,12 +1,12 @@
 import ynspcS3 from "./setup"
-import { bucketName, signedUrlExpiry } from "./config"
+import { GENERAL, bucketName, keySize, signedUrlExpiry } from "./config"
 import { generalisedKey, generateKey, SignedUrlResponse, SIGNED_URL_CONFIG } from "./types"
 import { AWSError, S3 } from "aws-sdk"
 import { PromiseResult } from "aws-sdk/lib/request"
 
 export const generateSignedUrl = async <TCONTTYPE extends string, TExt extends string>(prefix: string, contentType: TCONTTYPE, extWithOutDot: TExt): Promise<SignedUrlResponse> => {
     const s3 = new ynspcS3()
-    const key = generalisedKey(prefix, generateKey(8), extWithOutDot)
+    const key = generalisedKey(prefix, generateKey(keySize), extWithOutDot)
 
     const signedUrlConfig: SIGNED_URL_CONFIG = {
         Bucket: bucketName,
@@ -16,15 +16,21 @@ export const generateSignedUrl = async <TCONTTYPE extends string, TExt extends s
     }
 
     try {
-        const url: string = await s3.generateSignedUrl("putObject", signedUrlConfig);
-        
         return {
-            url,
+            url: await s3.generateSignedUrl("putObject", signedUrlConfig),
             key
         }
     }
-    catch(exception: any) {
-        throw new TypeError(exception.message)
+    catch(exception: unknown) {
+        if (typeof exception === "string") {
+            throw new TypeError(exception)
+        }
+        else if (exception instanceof Error) {
+            throw new TypeError(exception.message)
+        }
+        else {
+            throw new TypeError(GENERAL.CREATE_BUG)
+        }
     }
 }
 
@@ -33,8 +39,16 @@ export const getFileObject = (key: string): Promise<PromiseResult<S3.GetObjectOu
     try{
         return s3.getFileObject(key)
     }
-    catch(exception: any) {
-        throw new TypeError(exception?.message)
+    catch(exception: unknown) {
+        if (typeof exception === "string") {
+            throw new TypeError(exception)
+        }
+        else if (exception instanceof Error) {
+            throw new TypeError(exception.message)
+        }
+        else {
+            throw new TypeError(GENERAL.CREATE_BUG)
+        }
     }
 }
 
@@ -43,7 +57,15 @@ export const checkObject = (key: string): Promise<boolean> => {
     try{
         return s3.checkObject(key)
     }
-    catch(exception: any) {
-        throw new TypeError(exception?.message)
+    catch(exception: unknown) {
+        if (typeof exception === "string") {
+            throw new TypeError(exception)
+        }
+        else if (exception instanceof Error) {
+            throw new TypeError(exception.message)
+        }
+        else {
+            throw new TypeError(GENERAL.CREATE_BUG)
+        }
     }
 }

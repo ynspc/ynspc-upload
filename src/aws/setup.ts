@@ -10,13 +10,18 @@ import {
     envCheck
  } from "./config"
 import { SIGNED_URL_CONFIG } from "./types";
+import { exit } from "process";
 
 export default class AWS_HELPER {
     private readonly s3Helper
 
     constructor() {
-        if (envCheck.STORAGE !== 'aws') {
-            throw new TypeError("Please set STORAGE as aws in env file. Or can choose between aws, google or local.")
+        if (typeof envCheck.STORAGE === "undefined" || envCheck.STORAGE !== 'aws') {
+            console.log("==========================================");
+            console.log("Please set STORAGE as aws in env file. Or can choose between aws, google or local.")
+            console.log("==========================================");
+            console.log("Exiting with error code 1");
+            exit(1)
         }
         // AWS.config.update({
         //     credentials: {

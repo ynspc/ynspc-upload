@@ -1,5 +1,4 @@
 import { cleanEnv, str, num } from 'envalid'
-console.log("ENV", process.env);
 
 export const envCheck = cleanEnv(process.env, { STORAGE: str({
         default: "local",
@@ -15,7 +14,8 @@ const AWS_CONFIG = envCheck.STORAGE === "aws"
         SIGNATURE_VERSION: str(),
         ACCESS_KEY: str(),
         SECRET_KEY: str(),
-        SIGNED_URL_EXPIRY: num()
+        SIGNED_URL_EXPIRY: num(),
+        SIZE_KEY: num(),
     }) 
     : {
         BUCKET_NAME: "",
@@ -23,7 +23,8 @@ const AWS_CONFIG = envCheck.STORAGE === "aws"
         SIGNATURE_VERSION: "",
         ACCESS_KEY: "",
         SECRET_KEY: "",
-        SIGNED_URL_EXPIRY: 0
+        SIGNED_URL_EXPIRY: 0,
+        SIZE_KEY: 0
     }
 
 const GOOGLE_CLOUD_STORAGE_CONFIG = envCheck.STORAGE === "google" 
@@ -50,3 +51,7 @@ export const signatureVersion = AWS_CONFIG.SIGNATURE_VERSION
 export const accessKeyId = AWS_CONFIG.ACCESS_KEY
 export const secretAccessKey = AWS_CONFIG.SECRET_KEY
 export const signedUrlExpiry = AWS_CONFIG.SIGNED_URL_EXPIRY
+export const keySize = AWS_CONFIG.SIZE_KEY
+export const GENERAL = {
+    CREATE_BUG: "Create bug for this error."
+}
