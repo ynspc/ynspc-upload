@@ -1,16 +1,26 @@
 import ynspcS3 from "./setup"
-import { GENERAL, bucketName, keySize, signedUrlExpiry } from "./config"
-import { generalisedKey, generateKey, SignedUrlResponse, SIGNED_URL_CONFIG } from "./types"
+import { GENERAL, bucketName, signedUrlExpiry } from "./config"
+import { generalisedKey, SignedUrlResponse, SIGNED_URL_CONFIG, FileConfig, UploadOption } from "./types"
 import { AWSError, S3 } from "aws-sdk"
 import { PromiseResult } from "aws-sdk/lib/request"
 
-export const generateSignedUrl = async <TCONTTYPE extends string, TExt extends string>(prefix: string, contentType: TCONTTYPE, extWithOutDot: TExt): Promise<SignedUrlResponse> => {
+export const generateSignedUrl = async <TContentType extends string, TExt extends string>(
+    fileConfig: FileConfig<TContentType, TExt>, 
+    uploadOption?: UploadOption
+): Promise<SignedUrlResponse> => {
     const s3 = new ynspcS3()
-    const key = generalisedKey(prefix, generateKey(keySize), extWithOutDot)
+    let key = `${fileConfig?.prefix?.replace(/\/$/, "")}/` ?? ""
+
+    if (uploadOption?.keepSameName) {
+        key += `${fileConfig?.fileName}.${fileConfig.extensionWithOutDot}`
+    }
+    else {
+        key += generalisedKey(fileConfig.extensionWithOutDot)
+    }
 
     const signedUrlConfig: SIGNED_URL_CONFIG = {
         Bucket: bucketName,
-        ContentType: contentType,
+        ContentType: fileConfig.contentType,
         Expires: signedUrlExpiry,
         Key: key
     }
