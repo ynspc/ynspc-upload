@@ -1,5 +1,11 @@
 # @ynspc/image-upload
 
+## 0.1.0
+
+### Minor Changes
+
+- 925fc64: Added google storage to upload file using signed url `generateGoogleSignedUrl`
+
 ## 0.0.6
 
 ### Patch Changes

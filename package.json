@@ -1,6 +1,6 @@
 {
   "name": "@ynspc/image-upload",
-  "version": "0.0.8",
+  "version": "0.1.0",
   "description": "A basic package to work with file upload criteria.",
   "private": false,
   "main": "./dist/index.js",
@@ -17,6 +17,7 @@
     "test:watch": "vitest",
     "ci": "pnpm run lint && pnpm run test && pnpm run build",
     "ucs": "changeset",
+    "ucsv": "changeset version",
     "release": "pnpm run lint && pnpm run test && pnpm run build && changeset publish"
   },
   "keywords": [
