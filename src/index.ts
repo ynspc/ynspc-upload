@@ -3,6 +3,7 @@ import { manageConfiguration, manageFileNaming } from "./upload/config"
 import { FileUploadMiddleware, parseFormData } from "./middleware"
 
 import { generateSignedUrl, getFileObject, checkObject } from "./aws"
+import { generateGoogleSignedUrl } from "./google"
 
 export default FileUpload
 
@@ -13,5 +14,6 @@ export {
     parseFormData,
     generateSignedUrl,
     getFileObject,
-    checkObject
+    checkObject,
+    generateGoogleSignedUrl
 }

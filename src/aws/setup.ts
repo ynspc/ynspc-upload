@@ -1,12 +1,9 @@
-import * as AWS from "aws-sdk"
 import S3 from "aws-sdk/clients/s3"
 import { 
     accessKeyId,
     secretAccessKey,
     bucketName,
     region,
-    signatureVersion,
-    signedUrlExpiry,
     envCheck
  } from "./config"
 import { SIGNED_URL_CONFIG } from "./types";
@@ -23,16 +20,6 @@ export default class AWS_HELPER {
             console.log("Exiting with error code 1");
             exit(1)
         }
-        // AWS.config.update({
-        //     credentials: {
-        //         accessKeyId,
-        //         secretAccessKey
-        //     },
-        //     region,
-        //     signatureVersion
-        // });
-
-        // this.s3Helper = new AWS.S3()
         this.s3Helper = new S3({
             region,
             accessKeyId,
